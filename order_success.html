@@ -1,0 +1,74 @@
+<html >
+    <head>
+        <meta charset="UTF-8">
+        <title>Order Success</title>
+        <style>
+            body{
+                font-family: Arial, sans-serif;
+                background-color: #f0f8ff;
+                margin:0;
+                padding: 0;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+            }
+            .success-container{
+                background-color: #ffffff;
+                padding:30px;
+                border-radius: 10px;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+                text-align: center;
+                width:400px;
+            }
+            h1{
+                color:#28a745;
+                font-size: 24px;
+                margin-bottom: 20px;
+            }
+            p{
+                font-size:16px;
+                color:#333;
+                margin-bottom: 15px;
+            }
+            .highlight{
+                font-weight: bold;
+                color:#000;
+            }
+            .order-details{
+                background-color: #f0f8fa;
+                padding: 10px;
+                border-radius: 5px;
+                margin-top: 20px;
+            }
+            .order-details p{
+                margin:8px 0;
+                color:#555;
+            }
+            a{
+                display: inline-block;
+                margin-top: 20px;
+                text-decoration: none;
+                background-color: #007bff;
+                color:white;
+                padding: 10px 20px;
+                border-radius: 5px;
+                transition: background-color 0.3s ease;
+            }
+            a:hover{
+                background-color: #0056b3;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="success-container">
+        <h1>Order Placed Successfully!</h1>
+        <p>Thank you<span class="highlight"> {{username}}</span>for ordering<span class="highlight" {{fooditem}}</span></span></p>
+        <div class="order-details">
+        <p>Your order will be delivered to :</p>
+     <p><span class="highlight"> {{address}}</span>,<span class="highlight">{{pincode}}</span></p>
+     </div>
+     <a href="/">Back to home</a>
+     </div>
+    </body>
+</html>
