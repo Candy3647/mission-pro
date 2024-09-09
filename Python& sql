@@ -1,0 +1,136 @@
+import pyodbc
+from flask import Flask, render_template, request
+
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return render_template('index.html')
+
+@app.route('/order', methods=['GET', 'POST'])
+def order():
+    conn = pyodbc.connect('your_connection_string')  # Add your correct DB connection string
+    cursor = conn.cursor()
+
+    # Create the table if it doesn't exist
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS orders (
+            Name TEXT,
+            Email TEXT,
+            FoodItem TEXT,
+            Quantity INTEGER,
+            Address TEXT,
+            Pincode TEXT
+        )
+    ''')
+    conn.commit()
+
+    if request.method == 'POST':
+        Name = request.form['username']
+        Email = request.form['email']
+        FoodItem = request.form['fooditem']
+        Quantity = request.form['quantity']
+        Address = request.form['address']
+        Pincode = request.form['pincode']
+
+        # Insert data into the orders table
+        cursor.execute('''
+            INSERT INTO orders (Name, Email, FoodItem, Quantity, Address, Pincode)
+            VALUES (?, ?, ?, ?, ?, ?)
+        ''', (Name, Email, FoodItem, Quantity, Address, Pincode))
+
+        conn.commit()
+        conn.close()
+
+        return render_template('order_success.html', username=Name, email=Email, fooditem=FoodItem, quantity=Quantity, address=Address, pincode=Pincode)
+
+    return render_template('order_form.html')
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
+    ~~~
+import pyodbc
+
+conn = pyodbc.connect(
+    'DRIVER={ODBC Driver 17 for SQL Server};'
+    'SERVER=your_server_name_or_IP;'
+    'DATABASE=your_database_name;'
+    'UID=your_username;'
+    'PWD=your_password'
+)
+
+~~~
+CREATE TABLE orders (
+    ID INT IDENTITY(1,1) PRIMARY KEY,
+    Name NVARCHAR(100),
+    Email NVARCHAR(100),
+    FoodItem NVARCHAR(100),
+    Quantity INT,
+    Address NVARCHAR(255),
+    Pincode NVARCHAR(20)
+);
+~~~
+import pyodbc
+from flask import Flask, render_template, request
+
+app = Flask(__name__)
+
+# SQL Server connection string
+conn_string = (
+    'DRIVER={ODBC Driver 17 for SQL Server};'
+    'SERVER=your_server_name_or_IP;'
+    'DATABASE=your_database_name;'
+    'UID=your_username;'
+    'PWD=your_password'
+)
+
+@app.route('/')
+def home():
+    return render_template('index.html')
+
+@app.route('/order', methods=['GET', 'POST'])
+def order():
+    # Establish connection to SQL Server
+    conn = pyodbc.connect(conn_string)
+    cursor = conn.cursor()
+
+    # Create the orders table if it doesn't exist
+    cursor.execute('''
+        IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='orders' AND xtype='U')
+        CREATE TABLE orders (
+            ID INT IDENTITY(1,1) PRIMARY KEY,
+            Name NVARCHAR(100),
+            Email NVARCHAR(100),
+            FoodItem NVARCHAR(100),
+            Quantity INT,
+            Address NVARCHAR(255),
+            Pincode NVARCHAR(20)
+        )
+    ''')
+    conn.commit()
+
+    if request.method == 'POST':
+        # Retrieve form data
+        Name = request.form['username']
+        Email = request.form['email']
+        FoodItem = request.form['fooditem']
+        Quantity = request.form['quantity']
+        Address = request.form['address']
+        Pincode = request.form['pincode']
+
+        # Insert data into the SQL Server orders table
+        cursor.execute('''
+            INSERT INTO orders (Name, Email, FoodItem, Quantity, Address, Pincode)
+            VALUES (?, ?, ?, ?, ?, ?)
+        ''', (Name, Email, FoodItem, Quantity, Address, Pincode))
+
+        conn.commit()
+        conn.close()
+
+        return render_template('order_success.html', username=Name, email=Email, fooditem=FoodItem, quantity=Quantity, address=Address, pincode=Pincode)
+
+    return render_template('order_form.html')
+
+if __name__ == '__main__':
+    app.run(debug=True)
